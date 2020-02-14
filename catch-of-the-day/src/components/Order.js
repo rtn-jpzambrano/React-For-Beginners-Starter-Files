@@ -12,11 +12,11 @@ class Order extends Component {
                 {count} lbs {fish.name}
                 {formatPrice(count * fish.price)}
             </li>
-        ) : (
+        ) : fish ? (
             <li key={id}>
                 Sorry {fish ? fish.name : "fish"} is no longer available
             </li>
-        );
+        ) : null;
     }
 
     render() {
