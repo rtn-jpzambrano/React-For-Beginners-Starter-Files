@@ -1,10 +1,27 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class EditFishForm extends Component {
-    handleChange = (event) => {
+    static propTypes = {
+        fishId: PropTypes.string,
+        fish: PropTypes.shape({
+            image: PropTypes.string,
+            name: PropTypes.string,
+            description: PropTypes.string,
+            status: PropTypes.string,
+            price: PropTypes.number,
+        }),
+        updateFish: PropTypes.func,
+        deleteFish: PropTypes.func,
+    };
+
+    handleChange = ({ currentTarget }) => {
+        const valueAsNumber = parseFloat(currentTarget.value);
+        const isNumber = !isNaN(valueAsNumber);
+
         const updatedFish = {
             ...this.props.fish,
-            [event.currentTarget.name]: event.currentTarget.value,
+            [currentTarget.name]: isNumber ? valueAsNumber : currentTarget.value,
         };
 
         this.props.updateFish(this.props.fishId, updatedFish);
@@ -51,6 +68,8 @@ class EditFishForm extends Component {
                     value={this.props.fish.image}
                     onChange={this.handleChange}
                 />
+
+                <button onClick={() => this.props.deleteFish(this.props.fishId)}>Remove Fish</button>
             </div>
         );
     }

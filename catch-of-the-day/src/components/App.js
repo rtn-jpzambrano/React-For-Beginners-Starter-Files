@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Header from './Header';
 import Inventory from './Inventory';
 import Order from './Order';
@@ -8,6 +10,10 @@ import sampleFishes from '../sample-fishes';
 import base from '../base';
 
 class App extends React.Component {
+    static propTypes = {
+        match: PropTypes.object
+    };
+
     state = {
         fishes: {},
         order: {},
@@ -50,7 +56,14 @@ class App extends React.Component {
 
         fishes[fishId] = fish;
         this.setState({ fishes });
-    }
+    };
+
+    deleteFish = (fishId) => {
+        const fishes = {...this.state.fishes};
+
+        fishes[fishId] = null;
+        this.setState({ fishes });
+    };
 
     loadSampleFishes = () => {
         this.setState({ fishes: sampleFishes });
@@ -64,6 +77,13 @@ class App extends React.Component {
         this.setState({ order });
     };
 
+    removeFromOrder = (fishId) => {
+        const order= {...this.state.order};
+
+        delete order[fishId];
+        this.setState({ order });
+    };
+
     render() {
         return (
             <div className="catch-of-the-day">
@@ -72,11 +92,12 @@ class App extends React.Component {
                     <ul className="fishes">
                         {Object.entries(this.state.fishes).map(
                             ([fishId, fishValues]) => (
-                                    <Fish
-                                        key={fishId}
-                                        fishId={fishId}
-                                        details={fishValues}
-                                        addToOrder={this.addToOrder}></Fish>
+                                <Fish
+                                    key={fishId}
+                                    fishId={fishId}
+                                    details={fishValues}
+                                    addToOrder={this.addToOrder}
+                                ></Fish>
                             )
                         )}
                     </ul>
@@ -84,12 +105,15 @@ class App extends React.Component {
                 <Order
                     fishes={this.state.fishes}
                     order={this.state.order}
+                    removeFromOrder={this.removeFromOrder}
                 ></Order>
                 <Inventory
                     fishes={this.state.fishes}
                     addFish={this.addFish}
                     updateFish={this.updateFish}
+                    deleteFish={this.deleteFish}
                     loadSampleFishes={this.loadSampleFishes}
+                    storeId={this.props.match.params.storeId}
                 ></Inventory>
             </div>
         )
